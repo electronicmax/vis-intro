@@ -29,7 +29,6 @@ var linefn = function(mode) {
 		.x(function(d) { return mode(d).x + margin.left; })
 		.y(function(d) { return height - mode(d).y + margin.top; })
 		.interpolate("basis");
-	
 };
 
 function ex1(sel) {
@@ -90,11 +89,19 @@ var svg = d3.select("body").selectAll("svg")
 	});
 
 // let's make some buttons! 
-d3.select('body').selectAll('div.btn')
-	.data(['log', 'linear', 'round'])
+var modegroup = d3.select('body').selectAll('div.modegroup')
+	.data(examples)
+	.enter().append('div')
+	.attr('class', 'modegroup btn-group')
+	.attr('data-toggle', 'buttons-radio');
+
+modegroup.selectAll('button.btn')
+	.data(['linear', 'log', 'round'])
     .enter().append('div')
-	.attr('class', function(d) { return 'btn ex1_' + d; })
-    .on('click', function(d) {
+	.attr('class', function(d) {
+		var isactive = d == 'linear' ? 'active ' : '';
+		return isactive + 'btn btn-primary ex1_' + d;
+	}).on('click', function(d) {
 	    if (d === 'log') { log('ex1 -> log'); return ex1_log(); }
 	    if (d === 'linear') { log('ex1 -> lin'); return ex1_lin(); }
 	    if (d === 'round') { log('ex1 -> rnd'); return ex1_round(); }	    
