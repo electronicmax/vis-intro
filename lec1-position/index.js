@@ -65,14 +65,10 @@ function ex1(sel, passed_mode) {
 	    .attr('d', line);	
     }
     */
-    console.log('selection is ', d3.select(sel));
 }
 
-function ex2(sel) {
-    console.log('ex2', sel);    
-}
 
-var examples = [ex1, ex2];
+var examples = [ex1];
 var svg = d3.select("body").selectAll("svg")
     .data(examples)
     .enter()
@@ -81,7 +77,9 @@ var svg = d3.select("body").selectAll("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.bottom + margin.top)
     .append("g")
-    .each(function(render_fn) { console.log('renderfn is ', typeof(render_fn), render_fn); render_fn(this);  });
+    .each(function(render_fn) {
+		render_fn(this);
+	});
 
 var ex1_log = function() {
     // clear_vl(series_vl);
