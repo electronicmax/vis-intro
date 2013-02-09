@@ -13,35 +13,58 @@ var gen_random = function() {
 };
 var series = gen_random(N);
 
-// 13 -> [[x(13), 10], [x(13), 15]]
-var make_vl = function(pts) {
-    return  pts.map(function(x) { return [[x, Y0], [x, Y1]]; });
+
+var make_vl = function(pts, arr) {
+    arr = arr || [];
+    pts.map(function(x,i) {
+	    arr[i] = [[x, Y0, Math.random()], [x, Y1, Math.random()]];
+	});
+    return arr;
 };
 
 var origin_vl = make_vl([0]), series_vl = make_vl(series);
+var linscale = d3.scale.linear().domain([1,100]).range([0,width]); 
+var logscale = d3.scale.log().domain([1,100]).range([0,width]);
 
-function ex1(sel, mode) {
-    mode = mode || d3.scale.linear().domain([0,100]).range([0,width]);
-    
+function ex1(sel, passed_mode) {
+    var mode = passed_mode || linscale;
+
     var line = d3.svg.line()
 	.x(function(d) { return mode(d[0]) + margin.left; })
 	.y(function(d) { return d[1] + margin.top; })
 	.interpolate("basis");
-    
-    d3.select(sel).selectAll('.origin')
-	.data(origin_vl)
-	.enter()
-	.append('svg:path')
-	.attr('stroke', 'green')
-	.attr('d', line);    
+
+    // draw the origin
+    d3.select(sel).selectAll('.origin').data(origin_vl).enter()
+	.append('svg:path').attr('class', 'origin').attr('stroke', 'green')
+	.attr('d', line);
+
     d3.select(sel).selectAll('.data')
 	.data(series_vl)
 	.enter()
 	.append('svg:path')
+	.attr('class', 'data')
 	.attr('stroke', 'blue')
 	.transition()
 	.duration(1000)
-	.attr('d', line);    
+	.attr('d', line);
+    
+    /*
+    if (!passed_mode) {
+	console.log('not mode');
+	d3.select(sel).selectAll('.data').data(series_vl)
+	    .enter().append('svg:path')
+	    .attr('class', 'data')
+	    .attr('stroke', 'blue')
+	    .attr('d', line);
+    } else {
+	d3.select(sel).selectAll('.data')
+	    .data(series_vl)
+	    .transition()
+	    .duration(1000)
+	    .attr('d', line);	
+    }
+    */
     console.log('selection is ', d3.select(sel));
 }
 
@@ -61,13 +84,31 @@ var svg = d3.select("body").selectAll("svg")
     .each(function(render_fn) { console.log('renderfn is ', typeof(render_fn), render_fn); render_fn(this);  });
 
 var ex1_log = function() {
-    series_vl = make_vl(series);    
+    // clear_vl(series_vl);
+    series_vl = make_vl(series, series_vl);    
     d3.select("body").selectAll("svg")
 	.data(examples)
-	.each(function(render_fn) {
-		render_fn(this, d3.scale.log().domain([0,100]).range([0,width]));
-	    });    
+    .each(function(render_fn) { render_fn(this, logscale); });
 };
+var ex1_lin = function() {
+    // clear_vl(series_vl);    
+    series_vl = make_vl(series, series_vl);    
+    d3.select("body").selectAll("svg")
+	.data(examples)
+	.each(function(render_fn) { render_fn(this, linscale); });    
+};
+
+
+// let's make some buttons! 
+d3.select('body').selectAll('button').data(['log', 'linear'])
+    .enter().append('div')
+    .attr('class', function(d) { return 'button ex1_' + d; })
+    .on('click', function(d) {
+	    if (d === 'log') { return ex1_log(); }
+	    if (d === 'linear') { return ex1_lin(); }	    
+	})
+    .text(function(d) { return d; });
+
 
 
 
