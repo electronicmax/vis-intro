@@ -2,11 +2,12 @@
 /*jslint vars:true, todo:true, sloppy:true */
 
 var N = 70;
-var Y0 = 0, Y1 = 20;
+var Y0 = 0, Y1 = 100;
 var log = function() { console.log.apply(console,arguments); };
 var margin = {top: 10, right: 50, bottom: 20, left: 50},
     width = 900 - margin.left - margin.right,
-    height = 100 - margin.top - margin.bottom;
+    height = 600 - margin.top - margin.bottom;
+
 var gen_random = function() {
     var data = [];
     for (var i = 0; i < N; i++) {
@@ -23,7 +24,7 @@ var make_vl = function(pts, arr) {
 var origin_vl = make_vl([0]), series_vl = make_vl(series);
 var linscale = d3.scale.linear().domain([1,100]).range([0,width]); 
 var logscale = d3.scale.log().domain([1,100]).range([0,width]);
-var histscale = d3.scale.linear().domain([0,20]).range([0,50]);
+var histscale = d3.scale.linear().domain([0,10]).range([0,height]);
 var linefn = function(mode) {
 	return line = d3.svg.line()
 		.x(function(d) { return mode(d).x + margin.left; })
