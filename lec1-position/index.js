@@ -77,7 +77,8 @@ var ex1_round = function() {
 
 // initialise the examples
 var examples = [ex1];
-var svg = d3.select("body").selectAll("svg")
+var svg = d3.select("body")
+    .selectAll("svg")
     .data(examples)
     .enter()
     .append("svg")
