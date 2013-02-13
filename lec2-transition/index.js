@@ -1,15 +1,15 @@
 /*global $,_,document,window,console,escape,Backbone,exports */
 /*jslint vars:true, todo:true, sloppy:true */
 
-var width = 800, height = 400;
+var width = 800, height = 400, margin=20;
 
 var makets = function(canvas, data) {
     var xmin = d3.min(data.map(function(d) { return d.x; })),
       xmax = d3.max(data.map(function(d) { return d.x; })),
       ymin = d3.min(data.map(function(d) { return d.y; })),
       ymax = d3.max(data.map(function(d) { return d.y; })),
-      xscale = d3.scale.linear().domain([xmin,xmax]).range([10, width - 10]),
-      yscale = d3.scale.linear().domain([ymin,ymax]).range([10, height - 10]);
+      xscale = d3.scale.linear().domain([xmin,xmax]).range([margin, width - 2*margin]),
+      yscale = d3.scale.linear().domain([ymin,ymax]).range([margin, height - 2*margin]);
     return {
 	xt : function(d) { return xscale(d.x); },
 	yt: function(d) { return height-yscale(d.y); }	    
